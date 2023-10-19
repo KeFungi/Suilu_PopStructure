@@ -1,10 +1,10 @@
 # metadata
-Genome list (S. brevipes, S. brunnescens, S. luteus) : metadata/genome_list.txt
-Genome list (S. luteus only): metadata/s208_list.txt
-Family (Clade) assignments for plink: metadata/pop.fam.txt
-Individual to exclude according to Sumpplementary Appendix A: /metadata/clone.fam.txt, /metadata/hap.fam.txt, /metadata/mixed.fam.txt, /metadata/self.fam.txt
-Raw sequences: raw_fastq/
-Reference genome: ge/Suilu4.fasta
+Genome list (S. brevipes, S. brunnescens, S. luteus) : metadata/genome_list.txt  
+Genome list (S. luteus only): metadata/s208_list.txt  
+Family (Clade) assignments for plink: metadata/pop.fam.txt  
+Individual to exclude according to Sumpplementary Appendix A: /metadata/clone.fam.txt, /metadata/hap.fam.txt, /metadata/mixed.fam.txt, /metadata/self.fam.txt  
+Raw sequences: raw_fastq/  
+Reference genome: ge/Suilu4.fasta  
 
 
 # subsample deep reads
@@ -258,6 +258,13 @@ plink --allow-extra-chr --bfile plink/s208_admixture --out plink/s208_admixture 
 ## avoid missing site: genetic diversity (Nucleotide diversity, Watterson's theta, Tajima's D)
 plink --allow-extra-chr --bfile plink/s208 --out plink/s208_con --mac 1 --make-bed --geno 0.1
 plink --allow-extra-chr --bfile plink/s208_con --out plink/s208_con --recode A
+
+# s189 (no clone, no mixed, no haploid; Slu st): splittree
+plink --allow-extra-chr --bfile plink/s208 --out plink/s189 --family --mac 1 --remove-cluster-names Slu1 Slu2 --make-bed
+plink --allow-extra-chr --bfile plink/s189 --out plink/s189_admixture --biallelic-only --mac 2 --indep-pairwise 50 10 0.1 --geno 0.1
+plink --allow-extra-chr --bfile plink/s189 --out plink/s189_admixture --extract plink/s189_admixture.prune.in --make-bed 
+plink --allow-extra-chr --bfile plink/s189 --out plink/s186  --recode A
+
 ```
 
 # Make tree
