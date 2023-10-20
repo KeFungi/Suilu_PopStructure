@@ -5,6 +5,7 @@ Family (Clade) assignments for plink: metadata/pop.fam.txt
 Individual to exclude according to Sumpplementary Appendix A: /metadata/clone.fam.txt, /metadata/hap.fam.txt, /metadata/mixed.fam.txt, /metadata/self.fam.txt  
 Raw sequences: raw_fastq/  
 Reference genome: ge/Suilu4.fasta  
+Geographic data: parsed_geo.csv
 
 
 # subsample deep reads
