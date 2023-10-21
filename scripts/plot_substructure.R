@@ -150,3 +150,5 @@ final_plot <-
   plot_grid(plotlist = plot_list, ncol = 5, rel_widths=c(1,0.5, 1, 1, 1), greedy = FALSE, labels=c("A", "", "B", "C", "D"))
 
 ggsave2("plots/substructures.pdf", final_plot, width = 16, height=16)
+ggsave2("plots/AUnoWA_sub.pdf", ibd_plots$AU_noWA , width = 4, height=4)
+
