@@ -3,7 +3,7 @@ library(cowplot)
 library(Cairo)
 source("scripts/geoinfo.R")
 wind_size <- 10000
-tajima_Ddf <- read_csv(paste0("results/tajimaD_", wind_size, ".csv"))
+tajima_Ddf <- read_csv(paste0("Fstats/tajimaD_", wind_size, ".csv"))
 
 tajima_Ddf_input <-
   tajima_Ddf %>%

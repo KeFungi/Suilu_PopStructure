@@ -6,6 +6,8 @@ Individual to exclude according to Sumpplementary Appendix A: /metadata/clone.fa
 Raw sequences: raw_fastq/  
 Reference genome: ge/Suilu4.fasta  
 Geographic data: parsed_geo.csv
+Relabeled samples used in SFS: metadata/s145.keep.fam.txt, metadata/s145.rename.fam.txt
+momi2 populations: metadata/momi2_pop.txt, metadata/s148.keep.fam.txt, metadata/s148.rename.fam.txt
 
 
 # subsample deep reads
@@ -266,13 +268,19 @@ plink --allow-extra-chr --bfile plink/s189 --out plink/s189_admixture --bialleli
 plink --allow-extra-chr --bfile plink/s189 --out plink/s189_admixture --extract plink/s189_admixture.prune.in --make-bed 
 plink --allow-extra-chr --bfile plink/s189 --out plink/s186  --recode A
 
+
+
 ```
 
 # Make tree
 ```bash
 mkdir vcf_fasta
 python scripts/vcf2phylip.py -i vcf_fasta/s214.vcf  -o vcf_fasta/s214.phy --remove-raxml-invar --skip-check --recode-vcf vcf_fasta/s214_phy.vcf.gz
-mpiexec -bynode -np 20 raxmlHPC-HYBRID-SSE3 -T 8 -n s214-CAT -f a -s s214.phy -m GTRCAT -p 12345 -x 12345 -#1000 -V
+mpiexec -bynode -np 20 raxmlHPC-HYBRID-SSE3 -T 8 -n s214-CAT -s s214.phy -m GTRCAT -p 12345 -x 12345 -#1000 -V
+mpiexec -bynode -np 20 raxmlHPC-HYBRID-SSE3 -T 8 -n s214-CAT -s s214.phy -m GTRCAT -p 12345 -V
+
+
+raxmlHPC-SSE3 -m GTRCAT -p 12345 -f b -t RAxML_result.s214-CAT -z RAxML_bootstrap.s214-CAT-1000-bt -n s214-CAT-final
 ```
 
 # Kinship 
@@ -388,3 +396,53 @@ Rscript scripts/reynold.R
 plink --allow-extra-chr --bfile plink/s189_admixture --out plink/s189_admixture --recode vcf-iid bgz
 python ./vcf2phylip/vcf2phylip.py -i plink/s189_admixture.vcf.gz -o splitstree/s189_admixture -p -n
 ```
+
+# momi2
+```bash
+#create SFS input
+mkdir momi2
+awk 'BEGIN{OFS="\t"} {print $1,$2}' ge/Suilu4.fasta.fai > ge/Suilu4.bed.g
+
+plink --allow-extra-chr --bfile plink/s208 --out plink/s148 --keep metadata/s148.keep.fam.txt --update-ids metadata/s148.rename.fam.txt --make-bed --mac 1 --biallelic-only
+plink --allow-extra-chr --bfile plink/s148 --out plink/s148 --recode vcf-iid bgz
+
+awk 'BEGIN{OFS="\t"} {print $2, $1}' plink/s148.fam | sed 's/\tSlu1$/\tOG/' | sed 's/\tSlu2$/\tOG/' > metadata/momi2_pop.txt
+
+bedtools complement -i <(bedtools sort -i ge/Suilu4.mask.bed) -g <(sort ge/Suilu4.bed.g) | grep -f <(awk '{print $1}' plink/s148.bim | sort | uniq | awk '{print $1 "\t"}') > ge/Suilu4.momi2.bed
+bcftools index plink/s148.vcf.gz 
+python -m momi.read_vcf plink/s148.vcf.gz metadata/momi2_pop.txt momi2/snpAlleleCounts.gz --outgroup OG --bed ge/Suilu4.momi2.bed
+python -m momi.extract_sfs momi2/sfs.gz 100 momi2/snpAlleleCounts.gz
+
+#Model A1
+for pop in AU-WA AU-other NAm-MA NZ SAm-Bariloche
+  do python ../momi2_scripts/momi2_A1_dr.py $pop > momi2_A1_dr_${pop}.log; done
+
+#Model B1-B3 AU and NZ
+python ../momi2_scripts/momi2_B1_p1p2ind.py AU-other NZ > momi2_B1_AUNZind1.log
+python ../momi2_scripts/momi2_B1_p1p2ind.py NZ AU-other > momi2_B1_AUNZind2.log
+python ../momi2_scripts/momi2_B2_p1top2.py AU-other NZ > momi2_B2_AUtoNZ.log
+python ../momi2_scripts/momi2_B2_p1top2.py NZ AU-other > momi2_B2_NZtoAU.log 
+python ../momi2_scripts/momi2_B3_p1p2m1.py AU-other NZ > momi2_B3_AUNZm1.log
+python ../momi2_scripts/momi2_B3_p1p2m1.py NZ AU-other > momi2_B3_NZAUm1.log
+
+python ../momi2_scripts/momi2_B1r_p1p2indrlocal.py AU-other NZ momi2_B1_AUNZind1.log > momi2_B1r_AUNZind1rlocal.log 
+python ../momi2_scripts/momi2_B1r_p1p2indrlocal.py NZ AU-other momi2_B1_AUNZind2.log > momi2_B1r_AUNZind2rlocal.log
+python ../momi2_scripts/momi2_B2r_p1top2rlocal.py AU-other NZ momi2_B2_AUtoNZ.log > momi2_B2r_AUtoNZrlocal.log
+python ../momi2_scripts/momi2_B2r_p1top2rlocal.py NZ AU-other momi2_B2_NZtoAU.log > momi2_B2r_NZtoAUrlocal.log
+python ../momi2_scripts/momi2_B3r_p1p2mrlocal.py AU-other NZ momi2_B3_AUNZm1.log > momi2_B3r_AUNZm1rlocal.log
+python ../momi2_scripts/momi2_B3r_p1p2mrlocal.py NZ AU-other momi2_B3_NZAUm1.log > momi2_B3r_NZAUm1rlocal.log
+
+#Model B1-B3 AU-other and AU-WA
+python ../momi2_scripts/momi2_B1_p1p2ind.py AU-other AU-WA > momi2_B1_AUsind1.log
+python ../momi2_scripts/momi2_B1_p1p2ind.py AU-WA AU-other > momi2_B1_AUsind2.log 
+python ../momi2_scripts/momi2_B2_p1top2.py  AU-other AU-WA > momi2_B2_othertoWA.log
+python ../momi2_scripts/momi2_B2_p1top2.py  AU-WA AU-other > momi2_B2_WAtoother.log
+python ../momi2_scripts/momi2_B3_p1p2m1.py  AU-other AU-WA > momi2_B3_otherWAm1.log
+python ../momi2_scripts/momi2_B3_p1p2m1.py  AU-WA AU-other > momi2_B3_WAotherm1.log
+
+python ../momi2_scripts/momi2_B1r_p1p2indrlocal.py AU-other AU-WA momi2_B1_AUsind1.log > momi2_B1r_AUsind1rlocal.log
+python ../momi2_scripts/momi2_B1r_p1p2indrlocal.py AU-WA AU-other momi2_B1_AUsind2.log > momi2_B1r_AUsind2rlocal.log
+python ../momi2_scripts/momi2_B2r_p1top2rlocal.py AU-other AU-WA momi2_B2_othertoWA.log > momi2_B2r_othertoWArlocal.log
+python ../momi2_scripts/momi2_B2r_p1top2rlocal.py AU-WA AU-other momi2_B2_WAtoother.log > momi2_B2r_WAtootherrlocal.log
+python ../momi2_scripts/momi2_B3r_p1p2mrlocal.py  AU-other AU-WA momi2_B3_otherWAm1.log > momi2_B3r_otherWAm1rlocal.log
+python ../momi2_scripts/momi2_B3r_p1p2mrlocal.py  AU-WA AU-other momi2_B3_WAotherm1.log > momi2_B3r_WAotherm1rlocal.log

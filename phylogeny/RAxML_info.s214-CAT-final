@@ -1,0 +1,47 @@
+
+
+WARNING: RAxML is not checking sequences for duplicate seqs and sites with missing data!
+
+
+
+This is RAxML version 8.2.12 released by Alexandros Stamatakis on May 2018.
+
+With greatly appreciated code contributions by:
+Andre Aberer      (HITS)
+Simon Berger      (HITS)
+Alexey Kozlov     (HITS)
+Kassian Kobert    (HITS)
+David Dao         (KIT and HITS)
+Sarah Lutteropp   (KIT and HITS)
+Nick Pattengale   (Sandia)
+Wayne Pfeiffer    (SDSC)
+Akifumi S. Tanabe (NRIFS)
+Charlie Taylor    (UF)
+
+
+RAxML Bipartition Computation: Drawing support values from trees in file RAxML_bootstrap.s214-CAT-1000-bt onto tree in file RAxML_result.s214-CAT
+
+
+RAxML was called as follows:
+
+raxmlHPC-SSE3 -m GTRCAT -p 12345 -f b -t RAxML_result.s214-CAT -z RAxML_bootstrap.s214-CAT-1000-bt -n s214-CAT-final 
+
+
+
+
+Found 1 tree in File RAxML_result.s214-CAT
+
+
+
+Found 1000 trees in File RAxML_bootstrap.s214-CAT-1000-bt
+
+
+
+Found 1 tree in File RAxML_result.s214-CAT
+
+
+
+Time for Computation of Bipartitions 0.158322
+Tree with bipartitions written to file:  /work/yk158/thesis_redo/RAxML_bipartitions.s214-CAT-final
+Tree with bipartitions as branch labels written to file:  /work/yk158/thesis_redo/RAxML_bipartitionsBranchLabels.s214-CAT-final
+Execution information file written to :  /work/yk158/thesis_redo/RAxML_info.s214-CAT-final

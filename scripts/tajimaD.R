@@ -58,8 +58,14 @@ cut_rows <-
 
 wind_size <- as.numeric(commandArgs(trailingOnly=TRUE)[1])
 
+#s208con<-
+#  read.PLINK("plink/s208_con.raw")
+#s208con_pop <-
+#  seppop(s208con)
+#saveRDS(s208con_pop, "plink/s208con_pop.rds")
+
 s208con_pop <-
-  readRDS("s208con_pop.rds")
+  readRDS("plink/s208con_pop.rds")
 
 CEu_Belgium_ids <-
   geoinfo_tb %>%
