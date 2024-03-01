@@ -1,7 +1,7 @@
 import momi
 from matplotlib import pyplot as plt
 
-base_N=50
+base_N=1000
 t_intro=200
 N0_neutral=3000
 N0_intro=500
@@ -26,7 +26,7 @@ def cleandraw(demoplot):
 
 #A1 SAm
 NEu=33247.32568
-Nin1=1034.75128
+Nin1=36649.82206
 tin1=727.9621254
 g1=0.004912346
 
@@ -76,10 +76,10 @@ plt.savefig("momi2_best_A1NAm", dpi=300)
 #B3 NZAU
 NEu=32577.3621
 Nin1=4562.453916
-tin1=685.1519459 - 5
+tin1=685.1519459
 g1=0.0
 Nin2=9759.025379
-tin2=703.5331666 + 5
+tin2=703.5331666
 g2=0.003262121
 tm=274.5980023
 m=0.373998401
