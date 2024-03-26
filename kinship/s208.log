@@ -1,0 +1,19 @@
+PLINK v1.90b6.18 64-bit (16 Jun 2020)
+Options in effect:
+  --allow-extra-chr
+  --bfile kinship/s208
+  --out kinship/s208
+  --recode
+
+Hostname: dcc-hashimilab-01
+Working directory: /work/yk158/Suilu_2022
+Start time: Thu Oct 13 01:23:04 2022
+
+Random number seed: 1665638584
+224397 MB RAM detected; reserving 112198 MB for main workspace.
+
+Error: Invalid chromosome code '27' on line 3959167 of .bim file.
+(This is disallowed for humans.  Check if the problem is with your data, or if
+you forgot to define a different chromosome set with e.g. --chr-set.)
+
+End time: Thu Oct 13 01:23:04 2022
